@@ -11,6 +11,36 @@
   ).matches;
 
   /* ------------------------------------------------------------------ *
+   * 0. FORCE START AT THE TOP
+   *
+   *    Mobile browsers sometimes restore the last scroll position on
+   *    reload, or jump straight to a URL fragment (e.g. from the dot
+   *    nav, which used plain <a href="#section"> links). Combined with
+   *    the hero's scroll lock, that can strand a visitor mid-page with
+   *    no way to scroll back up to "Open My Heart". This runs
+   *    immediately — before anything else — to guarantee the hero is
+   *    what's on screen when the page loads.
+   * ------------------------------------------------------------------ */
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+
+  function forceScrollTop() {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }
+
+  // Drop any "#section" fragment from the URL so neither this load nor a
+  // future reload auto-jumps past the hero.
+  if (location.hash) {
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
+  forceScrollTop();
+  window.addEventListener("load", forceScrollTop);
+
+  /* ------------------------------------------------------------------ *
    * 1. LOADING SCREEN
    * ------------------------------------------------------------------ */
   function initLoadingScreen() {
@@ -252,6 +282,10 @@
 
   /* ------------------------------------------------------------------ *
    * 4. DOT NAVIGATION — highlight active section, click to scroll
+   *
+   *    Navigation happens via scrollIntoView, not native anchor jumps,
+   *    so clicking a dot never writes a "#section" fragment into the
+   *    URL (which is what caused the scroll-trap bug above).
    * ------------------------------------------------------------------ */
   function initDotNav() {
     const dots = document.querySelectorAll(".dot-nav__dot");
@@ -260,6 +294,19 @@
       .filter(Boolean);
 
     if (!dots.length || !sections.length) return;
+
+    dots.forEach((dot) => {
+      dot.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = document.querySelector(dot.getAttribute("href"));
+        if (target) {
+          target.scrollIntoView({
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+            block: "start",
+          });
+        }
+      });
+    });
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -538,6 +585,7 @@
    * INIT — run everything once the DOM is ready
    * ------------------------------------------------------------------ */
   document.addEventListener("DOMContentLoaded", () => {
+    forceScrollTop();
     document.documentElement.classList.add("is-locked");
     document.body.classList.add("is-locked");
 

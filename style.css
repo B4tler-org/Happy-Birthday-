@@ -38,6 +38,11 @@ html {
 
 /* While the hero is locked, scrolling is fully disabled — the hero is the
    only thing the visitor can see or interact with. */
+/* While the hero is locked, scrolling is fully disabled — the hero is the
+   only thing the visitor can see or interact with. body gets position:
+   fixed rather than relying on overflow: hidden alone, since a fixed
+   element can't be visually shifted by a restored scroll position or a
+   URL fragment jump either. */
 html.is-locked,
 body.is-locked {
   overflow: hidden;
@@ -45,6 +50,12 @@ body.is-locked {
   scroll-snap-type: none;
   touch-action: none;
   overscroll-behavior: none;
+}
+
+body.is-locked {
+  position: fixed;
+  inset: 0;
+  width: 100%;
 }
 
 body {
