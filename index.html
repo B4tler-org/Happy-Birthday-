@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>For Safalta 💖</title>
+  <meta name="description" content="A little place made with love, just for Safalta.">
+
+  <!-- Google Fonts: Cormorant Garamond (display, elegant serif) + Quicksand (soft rounded body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2224%22 font-size=%2224%22>💗</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ LOADING SCREEN ============ -->
+  <div id="loading-screen" aria-hidden="false">
+    <div class="loader-heart">
+      <svg viewBox="0 0 32 29" class="loader-heart-svg">
+        <path d="M16 28.5 C 8 22, 1 16.5, 1 9.5 C 1 4.3, 5 1, 9.5 1 C 12.7 1, 15 2.7, 16 5.2 C 17 2.7, 19.3 1, 22.5 1 C 27 1, 31 4.3, 31 9.5 C 31 16.5, 24 22, 16 28.5 Z"/>
+      </svg>
+    </div>
+    <p class="loader-text">For Safalta <span class="pulse-emoji">💖</span></p>
+    <div class="loader-bar"><div class="loader-bar-fill" id="loader-fill"></div></div>
+  </div>
+
+  <!-- ============ AMBIENT BACKGROUND (floating hearts + glowing particles) ============ -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- ============ SCROLL PROGRESS PETAL TRAIL ============ -->
+  <nav class="dot-nav" aria-hidden="true">
+    <a href="#hero" class="dot-nav__dot" data-label="Home"></a>
+    <a href="#music" class="dot-nav__dot" data-label="Song"></a>
+    <a href="#letter" class="dot-nav__dot" data-label="Letter"></a>
+    <a href="#appreciation" class="dot-nav__dot" data-label="For You"></a>
+    <a href="#final" class="dot-nav__dot" data-label="Always"></a>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- ============ 1. HERO ============ -->
+    <section id="hero" class="section hero">
+      <p class="hero__eyebrow">a little place, made quietly, just for you</p>
+      <h1 class="hero__title">
+        Happy Birthday,<br>
+        <span class="hero__name">Safalta</span> <span class="hero__cake">🎂</span>
+      </h1>
+      <p class="hero__subtitle">A small place made with love, just for you.</p>
+      <button id="open-heart-btn" class="glow-btn">
+        <span>Open My Heart</span>
+        <span class="glow-btn__heart">🤍</span>
+      </button>
+      <div class="hero__scroll-hint" aria-hidden="true">
+        <span></span>
+      </div>
+    </section>
+
+    <!-- ============ 2. MUSIC ============ -->
+    <section id="music" class="section music-section">
+      <p class="section-eyebrow">a little something to play</p>
+      <h2 class="section-title">While You Read</h2>
+
+      <div class="player">
+        <div class="player__art" id="player-art">
+          <div class="player__ring"></div>
+          <span class="player__note">🎵</span>
+        </div>
+
+        <div class="player__info">
+          <p class="player__song">Happy Birthday</p>
+          <p class="player__artist">a song, just for this moment</p>
+
+          <div class="player__controls">
+            <button id="play-btn" class="player__play-btn" aria-label="Play song">
+              <svg id="icon-play" viewBox="0 0 24 24" class="icon-play"><path d="M8 5v14l11-7z"/></svg>
+              <svg id="icon-pause" viewBox="0 0 24 24" class="icon-pause" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+            </button>
+
+            <div class="player__track">
+              <div class="player__progress-bar">
+                <div class="player__progress-fill" id="progress-fill"></div>
+              </div>
+              <div class="player__time">
+                <span id="current-time">0:00</span>
+                <span id="duration-time">0:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="player__hint">Press play whenever you're ready — it won't start on its own. 🌷</p>
+
+      <!-- Add your own audio file at assets/happy-birthday.mp3 — see README -->
+      <audio id="birthday-audio" src="assets/happy-birthday.mp3" preload="metadata"></audio>
+    </section>
+
+    <!-- ============ 3. LETTER ============ -->
+    <section id="letter" class="section letter-section">
+      <p class="section-eyebrow">something I wanted to say</p>
+      <h2 class="section-title">A Letter For You</h2>
+
+      <div class="envelope-wrap">
+        <button class="envelope" id="envelope" aria-expanded="false" aria-controls="letter-paper" aria-label="Open the letter">
+          <div class="envelope__back"></div>
+          <div class="envelope__letter-peek"></div>
+          <div class="envelope__flap"></div>
+          <div class="envelope__front-left"></div>
+          <div class="envelope__front-right"></div>
+          <div class="envelope__seal">
+            <span>S</span>
+          </div>
+        </button>
+        <p class="envelope__hint" id="envelope-hint">tap the envelope to open</p>
+      </div>
+
+      <article class="letter-paper" id="letter-paper">
+        <p class="letter-paper__greeting">Happy Birthday, Safalta.</p>
+
+        <p>Today is all about celebrating you—the smile that brightens days, the kindness you carry, and the beautiful person you are. I hope this year brings you peace, courage, countless genuine smiles, and everything your heart quietly wishes for.</p>
+
+        <p>No matter where life takes us, I'll always be grateful for every memory we shared. You deserve to be loved gently, cared for deeply, and reminded every day how valuable you are.</p>
+
+        <p>Thank you for existing, and thank you for being someone who changed my world in ways words can never fully explain.</p>
+
+        <p>Happy Birthday once again. May your life be filled with happiness, good health, success, and endless beautiful moments. ❤️</p>
+
+        <p class="letter-paper__sign">— Samir</p>
+      </article>
+    </section>
+
+    <!-- ============ 4. APPRECIATION CARDS ============ -->
+    <section id="appreciation" class="section appreciation-section">
+      <p class="section-eyebrow">a few things, among many</p>
+      <h2 class="section-title">Things I Adore About You</h2>
+
+      <div class="cards-grid">
+        <div class="card" style="--delay:0">
+          <span class="card__icon">😊</span>
+          <p class="card__label">Your smile</p>
+        </div>
+        <div class="card" style="--delay:1">
+          <span class="card__icon">🌸</span>
+          <p class="card__label">Your kindness</p>
+        </div>
+        <div class="card" style="--delay:2">
+          <span class="card__icon">✨</span>
+          <p class="card__label">Your strength</p>
+        </div>
+        <div class="card" style="--delay:3">
+          <span class="card__icon">🌷</span>
+          <p class="card__label">Your laughter</p>
+        </div>
+        <div class="card" style="--delay:4">
+          <span class="card__icon">💕</span>
+          <p class="card__label">Your caring heart</p>
+        </div>
+        <div class="card" style="--delay:5">
+          <span class="card__icon">📸</span>
+          <p class="card__label">The memories we made</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. FINAL / NIGHT SKY ============ -->
+    <section id="final" class="section final-section">
+      <canvas id="stars-canvas" aria-hidden="true"></canvas>
+      <div class="final-content">
+        <span class="final__heart">🤍</span>
+        <p class="final__text">You'll always have a special place in my heart.</p>
+        <p class="final__signature">— Samir</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
