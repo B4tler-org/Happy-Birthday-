@@ -14,7 +14,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2224%22 font-size=%2224%22>💗</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="is-locked">
 
   <!-- ============ LOADING SCREEN ============ -->
   <div id="loading-screen" aria-hidden="false">
@@ -30,18 +30,27 @@
   <!-- ============ AMBIENT BACKGROUND (floating hearts + glowing particles) ============ -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <!-- ============ SCROLL PROGRESS PETAL TRAIL ============ -->
-  <nav class="dot-nav" aria-hidden="true">
+  <!-- ============ CINEMATIC TRANSITION OVERLAY ============ -->
+  <!-- Plays once, when "Open My Heart" is pressed: fade + blur + a burst of
+       floating hearts + a soft glow, before the rest of the site is revealed. -->
+  <div id="transition-overlay" aria-hidden="true">
+    <div class="transition-glow"></div>
+    <div class="transition-hearts" id="transition-hearts"></div>
+  </div>
+
+  <!-- ============ SCROLL PROGRESS DOT TRAIL ============ -->
+  <nav class="dot-nav" id="dot-nav" aria-hidden="true">
     <a href="#hero" class="dot-nav__dot" data-label="Home"></a>
-    <a href="#music" class="dot-nav__dot" data-label="Song"></a>
+    <a href="#welcome" class="dot-nav__dot" data-label="Welcome"></a>
+    <a href="#voice" class="dot-nav__dot" data-label="Voice"></a>
     <a href="#letter" class="dot-nav__dot" data-label="Letter"></a>
     <a href="#appreciation" class="dot-nav__dot" data-label="For You"></a>
-    <a href="#final" class="dot-nav__dot" data-label="Always"></a>
+    <a href="#sky" class="dot-nav__dot" data-label="Always"></a>
   </nav>
 
   <main id="main-content">
 
-    <!-- ============ 1. HERO ============ -->
+    <!-- ============ HERO (locked — the only thing visible at first) ============ -->
     <section id="hero" class="section hero">
       <p class="hero__eyebrow">a little place, made quietly, just for you</p>
       <h1 class="hero__title">
@@ -51,30 +60,41 @@
       <p class="hero__subtitle">A small place made with love, just for you.</p>
       <button id="open-heart-btn" class="glow-btn">
         <span>Open My Heart</span>
-        <span class="glow-btn__heart">🤍</span>
+        <span class="glow-btn__heart">💖</span>
       </button>
-      <div class="hero__scroll-hint" aria-hidden="true">
-        <span></span>
-      </div>
     </section>
 
-    <!-- ============ 2. MUSIC ============ -->
-    <section id="music" class="section music-section">
-      <p class="section-eyebrow">a little something to play</p>
-      <h2 class="section-title">While You Read</h2>
+    <!-- ============ 1. WELCOME ============ -->
+    <section id="welcome" class="section welcome-section">
+      <div class="welcome__bg" aria-hidden="true">
+        <span class="welcome__orb welcome__orb--1"></span>
+        <span class="welcome__orb welcome__orb--2"></span>
+        <span class="welcome__orb welcome__orb--3"></span>
+      </div>
+      <p class="section-eyebrow reveal">you made it</p>
+      <h2 class="welcome__title reveal">
+        To the most beautiful soul,<br><span class="welcome__name">Safalta</span> <span class="welcome__sparkle">💗</span>
+      </h2>
+      <p class="welcome__subtitle reveal">Everything past this point was made with you in mind.</p>
+    </section>
 
-      <div class="player">
+    <!-- ============ 2. BIRTHDAY VOICE MESSAGE ============ -->
+    <section id="voice" class="section voice-section">
+      <p class="section-eyebrow reveal">press play whenever you're ready</p>
+      <h2 class="section-title reveal">A Birthday Voice Message</h2>
+
+      <div class="player glass-card reveal">
         <div class="player__art" id="player-art">
           <div class="player__ring"></div>
-          <span class="player__note">🎵</span>
+          <span class="player__note">🎙️</span>
         </div>
 
         <div class="player__info">
-          <p class="player__song">Happy Birthday</p>
-          <p class="player__artist">a song, just for this moment</p>
+          <p class="player__song">For Safalta, With Love</p>
+          <p class="player__artist">a 30&nbsp;second message, just for this moment</p>
 
           <div class="player__controls">
-            <button id="play-btn" class="player__play-btn" aria-label="Play song">
+            <button id="play-btn" class="player__play-btn" aria-label="Play voice message">
               <svg id="icon-play" viewBox="0 0 24 24" class="icon-play"><path d="M8 5v14l11-7z"/></svg>
               <svg id="icon-pause" viewBox="0 0 24 24" class="icon-pause" hidden><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
             </button>
@@ -85,25 +105,25 @@
               </div>
               <div class="player__time">
                 <span id="current-time">0:00</span>
-                <span id="duration-time">0:00</span>
+                <span id="duration-time">0:30</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <p class="player__hint">Press play whenever you're ready — it won't start on its own. 🌷</p>
+      <p class="player__hint reveal">It won't play on its own — press play whenever you'd like to hear it. 🌷</p>
 
-      <!-- Add your own audio file at assets/happy-birthday.mp3 — see README -->
-      <audio id="birthday-audio" src="assets/happy-birthday.mp3" preload="metadata"></audio>
+      <!-- Add your own audio file at assets/voice-message.mp3 — see assets/README.md -->
+      <audio id="birthday-audio" src="assets/voice-message.mp3" preload="metadata"></audio>
     </section>
 
-    <!-- ============ 3. LETTER ============ -->
+    <!-- ============ 3. LOVE LETTER ============ -->
     <section id="letter" class="section letter-section">
-      <p class="section-eyebrow">something I wanted to say</p>
-      <h2 class="section-title">A Letter For You</h2>
+      <p class="section-eyebrow reveal">something I wanted to say</p>
+      <h2 class="section-title reveal">A Love Letter</h2>
 
-      <div class="envelope-wrap">
+      <div class="envelope-wrap reveal">
         <button class="envelope" id="envelope" aria-expanded="false" aria-controls="letter-paper" aria-label="Open the letter">
           <div class="envelope__back"></div>
           <div class="envelope__letter-peek"></div>
@@ -117,61 +137,63 @@
         <p class="envelope__hint" id="envelope-hint">tap the envelope to open</p>
       </div>
 
-      <article class="letter-paper" id="letter-paper">
-        <p class="letter-paper__greeting">Happy Birthday, Safalta.</p>
+      <div class="letter-paper-stage" id="letter-paper-stage">
+        <article class="letter-paper" id="letter-paper">
+          <p class="letter-paper__greeting">Happy Birthday, Safalta.</p>
 
-        <p>Today is all about celebrating you—the smile that brightens days, the kindness you carry, and the beautiful person you are. I hope this year brings you peace, courage, countless genuine smiles, and everything your heart quietly wishes for.</p>
+          <p>Today is all about celebrating you—the smile that brightens days, the kindness you carry, and the beautiful person you are. I hope this year brings you peace, courage, countless genuine smiles, and everything your heart quietly wishes for.</p>
 
-        <p>No matter where life takes us, I'll always be grateful for every memory we shared. You deserve to be loved gently, cared for deeply, and reminded every day how valuable you are.</p>
+          <p>No matter where life takes us, I'll always be grateful for every memory we shared. You deserve to be loved gently, cared for deeply, and reminded every day how valuable you are.</p>
 
-        <p>Thank you for existing, and thank you for being someone who changed my world in ways words can never fully explain.</p>
+          <p>Thank you for existing, and thank you for being someone who changed my world in ways words can never fully explain.</p>
 
-        <p>Happy Birthday once again. May your life be filled with happiness, good health, success, and endless beautiful moments. ❤️</p>
+          <p>Happy Birthday once again. May your life be filled with happiness, good health, success, and endless beautiful moments. ❤️</p>
 
-        <p class="letter-paper__sign">— Samir</p>
-      </article>
+          <p class="letter-paper__sign">— Samir</p>
+        </article>
+      </div>
     </section>
 
     <!-- ============ 4. APPRECIATION CARDS ============ -->
     <section id="appreciation" class="section appreciation-section">
-      <p class="section-eyebrow">a few things, among many</p>
-      <h2 class="section-title">Things I Adore About You</h2>
+      <p class="section-eyebrow reveal">a few things, among many</p>
+      <h2 class="section-title reveal">Things I Adore About You</h2>
 
       <div class="cards-grid">
-        <div class="card" style="--delay:0">
+        <div class="card glass-card" style="--delay:0">
           <span class="card__icon">😊</span>
           <p class="card__label">Your smile</p>
         </div>
-        <div class="card" style="--delay:1">
+        <div class="card glass-card" style="--delay:1">
           <span class="card__icon">🌸</span>
           <p class="card__label">Your kindness</p>
         </div>
-        <div class="card" style="--delay:2">
+        <div class="card glass-card" style="--delay:2">
           <span class="card__icon">✨</span>
           <p class="card__label">Your strength</p>
         </div>
-        <div class="card" style="--delay:3">
+        <div class="card glass-card" style="--delay:3">
           <span class="card__icon">🌷</span>
           <p class="card__label">Your laughter</p>
         </div>
-        <div class="card" style="--delay:4">
+        <div class="card glass-card" style="--delay:4">
           <span class="card__icon">💕</span>
           <p class="card__label">Your caring heart</p>
         </div>
-        <div class="card" style="--delay:5">
+        <div class="card glass-card" style="--delay:5">
           <span class="card__icon">📸</span>
           <p class="card__label">The memories we made</p>
         </div>
       </div>
     </section>
 
-    <!-- ============ 5. FINAL / NIGHT SKY ============ -->
-    <section id="final" class="section final-section">
+    <!-- ============ 5. MEMORY SKY ============ -->
+    <section id="sky" class="section sky-section">
       <canvas id="stars-canvas" aria-hidden="true"></canvas>
-      <div class="final-content">
-        <span class="final__heart">🤍</span>
-        <p class="final__text">You'll always have a special place in my heart.</p>
-        <p class="final__signature">— Samir</p>
+      <div class="sky-content">
+        <span class="sky__heart">🤍</span>
+        <p class="sky__text">You'll always have a special place in my heart.</p>
+        <p class="sky__signature">— Samir</p>
       </div>
     </section>
 

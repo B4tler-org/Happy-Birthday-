@@ -32,7 +32,6 @@
 
     const finish = () => {
       loadingScreen.classList.add("is-hidden");
-      document.body.style.overflow = "";
     };
 
     // Hide once the page has loaded, with a small minimum delay so the
@@ -145,10 +144,10 @@
       raf = requestAnimationFrame(step);
     } else {
       // draw a single static, gentle frame for reduced-motion users
-      step_once();
+      stepOnce();
     }
 
-    function step_once() {
+    function stepOnce() {
       ctx.clearRect(0, 0, width, height);
       for (const p of particles) {
         if (p.isHeart) drawHeart(p);
@@ -162,13 +161,97 @@
       resizeTimer = setTimeout(() => {
         resize();
         initParticles();
-        if (prefersReducedMotion) step_once();
+        if (prefersReducedMotion) stepOnce();
       }, 200);
     });
   }
 
   /* ------------------------------------------------------------------ *
-   * 3. DOT NAVIGATION — highlight active section, click to scroll
+   * 3. HERO LOCK + CINEMATIC "OPEN MY HEART" TRANSITION
+   *
+   *    On load, scrolling is fully disabled (html/body get .is-locked)
+   *    so the hero is the only thing visible. Pressing the button plays
+   *    a fade + blur + floating-hearts-burst transition, then unlocks
+   *    scrolling and reveals the Welcome section.
+   * ------------------------------------------------------------------ */
+  function initCinematicOpen() {
+    const btn = document.getElementById("open-heart-btn");
+    const hero = document.getElementById("hero");
+    const welcome = document.getElementById("welcome");
+    const overlay = document.getElementById("transition-overlay");
+    const heartsLayer = document.getElementById("transition-hearts");
+    const dotNav = document.getElementById("dot-nav");
+
+    if (!btn || !hero || !welcome || !overlay) return;
+
+    function spawnBurstHearts() {
+      if (!heartsLayer) return;
+      heartsLayer.innerHTML = "";
+      const emojis = ["💗", "💖", "💕", "🤍", "✨"];
+      const count = prefersReducedMotion ? 0 : 22;
+
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement("span");
+        span.className = "transition-heart";
+        span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        span.style.setProperty("--x", Math.random() * 100 + "%");
+        span.style.setProperty("--tx", (Math.random() * 160 - 80) + "px");
+        span.style.setProperty("--rot", (Math.random() * 50 - 25) + "deg");
+        span.style.setProperty("--size", (1 + Math.random() * 1.4) + "rem");
+        span.style.setProperty("--d", (1.8 + Math.random() * 1.4) + "s");
+        span.style.setProperty("--delay", (Math.random() * 0.6) + "s");
+        heartsLayer.appendChild(span);
+      }
+    }
+
+    function unlockScrolling() {
+      document.documentElement.classList.remove("is-locked");
+      document.body.classList.remove("is-locked");
+      if (dotNav) dotNav.classList.add("is-visible");
+    }
+
+    function openExperience() {
+      if (btn.disabled) return; // prevent double-triggering
+      btn.disabled = true;
+
+      // Step 1 — fade & blur the hero out
+      hero.classList.add("is-opening");
+
+      // Step 2 — bring in the cinematic overlay: glow + heart burst
+      spawnBurstHearts();
+      requestAnimationFrame(() => overlay.classList.add("is-active"));
+
+      const revealDelay = prefersReducedMotion ? 200 : 900;
+      const fadeOutDelay = prefersReducedMotion ? 400 : 1500;
+      const cleanupDelay = prefersReducedMotion ? 600 : 2500;
+
+      // Step 3 — once the glow has peaked, unlock scrolling and move to
+      // the Welcome section while the overlay still covers the jump
+      setTimeout(() => {
+        unlockScrolling();
+        welcome.scrollIntoView({ behavior: "auto", block: "start" });
+      }, revealDelay);
+
+      // Step 4 — let the overlay dissolve, revealing Welcome underneath
+      setTimeout(() => {
+        overlay.classList.remove("is-active");
+        overlay.classList.add("is-fading");
+      }, fadeOutDelay);
+
+      // Step 5 — cleanup: remove the overlay classes & burst hearts so
+      // everything is reset if the visitor scrolls back up to the hero
+      setTimeout(() => {
+        overlay.classList.remove("is-fading");
+        if (heartsLayer) heartsLayer.innerHTML = "";
+        hero.classList.remove("is-opening");
+      }, cleanupDelay);
+    }
+
+    btn.addEventListener("click", openExperience);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 4. DOT NAVIGATION — highlight active section, click to scroll
    * ------------------------------------------------------------------ */
   function initDotNav() {
     const dots = document.querySelectorAll(".dot-nav__dot");
@@ -199,23 +282,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 4. HERO — "Open My Heart" scrolls to the music section
-   * ------------------------------------------------------------------ */
-  function initHeroButton() {
-    const btn = document.getElementById("open-heart-btn");
-    const music = document.getElementById("music");
-    if (!btn || !music) return;
-
-    btn.addEventListener("click", () => {
-      music.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
-        block: "start",
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------ *
-   * 5. MUSIC PLAYER — play/pause, progress bar, seek
+   * 5. VOICE MESSAGE PLAYER — play/pause, progress bar, seek
    *    Does NOT autoplay. Only starts on user interaction.
    * ------------------------------------------------------------------ */
   function initMusicPlayer() {
@@ -243,7 +310,7 @@
     function setPlayingUI(isPlaying) {
       iconPlay.hidden = isPlaying;
       iconPause.hidden = !isPlaying;
-      playBtn.setAttribute("aria-label", isPlaying ? "Pause song" : "Play song");
+      playBtn.setAttribute("aria-label", isPlaying ? "Pause voice message" : "Play voice message");
       art.classList.toggle("is-playing", isPlaying);
     }
 
@@ -255,7 +322,7 @@
           const hint = document.querySelector(".player__hint");
           if (hint) {
             hint.textContent =
-              "Add your song file to assets/happy-birthday.mp3 to hear it play. 🎵";
+              "Add your recording to assets/voice-message.mp3 to hear it play. 🎙️";
           }
         });
       } else {
@@ -289,7 +356,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 6. ENVELOPE — open to reveal the letter
+   * 6. ENVELOPE — open to unfold the letter
    * ------------------------------------------------------------------ */
   function initEnvelope() {
     const envelope = document.getElementById("envelope");
@@ -303,13 +370,13 @@
       letterPaper.classList.add("is-visible");
       if (hint) hint.textContent = "with love 💌";
 
-      // Gently scroll the letter into view after the envelope animates open
+      // Gently scroll the unfolding letter into view
       setTimeout(() => {
         letterPaper.scrollIntoView({
           behavior: prefersReducedMotion ? "auto" : "smooth",
           block: "center",
         });
-      }, prefersReducedMotion ? 0 : 500);
+      }, prefersReducedMotion ? 0 : 450);
     }
 
     envelope.addEventListener("click", () => {
@@ -325,11 +392,11 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 7. APPRECIATION CARDS — reveal on scroll
+   * 7. REVEAL ON SCROLL — appreciation cards + generic .reveal elements
    * ------------------------------------------------------------------ */
   function initRevealOnScroll() {
-    const cards = document.querySelectorAll(".card");
-    if (!cards.length) return;
+    const targets = document.querySelectorAll(".card, .reveal");
+    if (!targets.length) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -343,19 +410,19 @@
       { threshold: 0.25 }
     );
 
-    cards.forEach((card) => observer.observe(card));
+    targets.forEach((el) => observer.observe(el));
   }
 
   /* ------------------------------------------------------------------ *
-   * 8. FINAL SECTION — twinkling night-sky stars
+   * 8. MEMORY SKY — twinkling stars + softly rising glowing hearts
    * ------------------------------------------------------------------ */
   function initStarsCanvas() {
     const canvas = document.getElementById("stars-canvas");
-    const section = document.getElementById("final");
+    const section = document.getElementById("sky");
     if (!canvas || !section) return;
     const ctx = canvas.getContext("2d");
 
-    let width, height, stars;
+    let width, height, stars, hearts;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -379,17 +446,61 @@
       }));
     }
 
+    function makeHearts() {
+      const count = width < 640 ? 6 : 10;
+      hearts = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: height + Math.random() * height,
+        size: 6 + Math.random() * 10,
+        speed: 0.12 + Math.random() * 0.2,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.006 + Math.random() * 0.01,
+        opacity: 0.25 + Math.random() * 0.35,
+      }));
+    }
+
+    function drawHeart(h) {
+      const s = h.size;
+      ctx.save();
+      ctx.translate(h.x, h.y);
+      ctx.globalAlpha = h.opacity;
+      ctx.shadowColor = "rgba(240, 207, 142, 0.8)";
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.moveTo(0, s * 0.3);
+      ctx.bezierCurveTo(-s / 2, -s / 3, -s, s / 6, 0, s);
+      ctx.bezierCurveTo(s, s / 6, s / 2, -s / 3, 0, s * 0.3);
+      ctx.fillStyle = "#f6d9ef";
+      ctx.fill();
+      ctx.restore();
+    }
+
     function draw(time) {
       ctx.clearRect(0, 0, width, height);
+
       for (const s of stars) {
         const twinkle = 0.5 + 0.5 * Math.sin(s.phase + time * s.speed);
         ctx.globalAlpha = 0.25 + twinkle * 0.75;
+        ctx.shadowBlur = 0;
         ctx.fillStyle = "#fff8ec";
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.globalAlpha = 1;
+
+      for (const h of hearts) {
+        h.y -= h.speed;
+        h.wobble += h.wobbleSpeed;
+        h.x += Math.sin(h.wobble) * 0.3;
+        if (h.y < -20) {
+          h.y = height + 20;
+          h.x = Math.random() * width;
+        }
+        drawHeart(h);
+      }
+      ctx.shadowBlur = 0;
+
       if (!prefersReducedMotion) requestAnimationFrame(draw);
     }
 
@@ -401,6 +512,7 @@
             visible = true;
             resize();
             makeStars();
+            makeHearts();
             requestAnimationFrame(draw);
           }
         });
@@ -416,6 +528,7 @@
         if (visible) {
           resize();
           makeStars();
+          makeHearts();
         }
       }, 200);
     });
@@ -425,19 +538,16 @@
    * INIT — run everything once the DOM is ready
    * ------------------------------------------------------------------ */
   document.addEventListener("DOMContentLoaded", () => {
-    document.body.style.overflow = "hidden"; // lock scroll during loader
+    document.documentElement.classList.add("is-locked");
+    document.body.classList.add("is-locked");
+
     initLoadingScreen();
     initAmbientCanvas();
+    initCinematicOpen();
     initDotNav();
-    initHeroButton();
     initMusicPlayer();
     initEnvelope();
     initRevealOnScroll();
     initStarsCanvas();
-
-    // unlock scroll shortly after the loader begins hiding
-    setTimeout(() => {
-      document.body.style.overflow = "";
-    }, 2200);
   });
 })();
