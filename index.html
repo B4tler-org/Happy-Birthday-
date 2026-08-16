@@ -38,6 +38,18 @@
     <div class="transition-hearts" id="transition-hearts"></div>
   </div>
 
+  <!-- ============ NEW: TYPEWRITER WELCOME (plays after "Open My Heart",
+       before the Welcome section is revealed) ============ -->
+  <div id="typewriter-overlay" aria-hidden="true">
+    <div class="typewriter-box">
+      <p class="typewriter-text" id="typewriter-text"></p>
+      <button id="typewriter-continue-btn" class="glow-btn typewriter-continue" hidden>
+        <span>Continue</span>
+        <span class="glow-btn__heart">🤍</span>
+      </button>
+    </div>
+  </div>
+
   <!-- ============ SCROLL PROGRESS DOT TRAIL ============ -->
   <nav class="dot-nav" id="dot-nav" aria-hidden="true">
     <a href="#hero" class="dot-nav__dot" data-label="Home"></a>
@@ -46,8 +58,37 @@
     <a href="#voice" class="dot-nav__dot" data-label="Voice"></a>
     <a href="#letter" class="dot-nav__dot" data-label="Letter"></a>
     <a href="#appreciation" class="dot-nav__dot" data-label="For You"></a>
+    <a href="#why-special" class="dot-nav__dot" data-label="Special"></a>
+    <a href="#surprise" class="dot-nav__dot" data-label="Surprise"></a>
     <a href="#sky" class="dot-nav__dot" data-label="Always"></a>
   </nav>
+
+  <!-- ============ NEW: TOP-RIGHT MINI PROGRESS DOTS ============ -->
+  <nav class="mini-dot-nav" id="mini-dot-nav" aria-hidden="true">
+    <a href="#hero" class="dot-nav__dot" data-label="Home"></a>
+    <a href="#welcome" class="dot-nav__dot" data-label="Welcome"></a>
+    <a href="#video" class="dot-nav__dot" data-label="Video"></a>
+    <a href="#voice" class="dot-nav__dot" data-label="Voice"></a>
+    <a href="#letter" class="dot-nav__dot" data-label="Letter"></a>
+    <a href="#appreciation" class="dot-nav__dot" data-label="For You"></a>
+    <a href="#why-special" class="dot-nav__dot" data-label="Special"></a>
+    <a href="#surprise" class="dot-nav__dot" data-label="Surprise"></a>
+    <a href="#sky" class="dot-nav__dot" data-label="Always"></a>
+  </nav>
+
+  <!-- ============ NEW: FLOATING MESSAGE BOTTLE ============ -->
+  <button id="message-bottle" class="message-bottle" aria-haspopup="dialog" aria-label="Open the floating message">
+    <span class="message-bottle__emoji">🍾</span>
+  </button>
+
+  <div id="bottle-modal" class="bottle-modal" aria-hidden="true" role="dialog" aria-label="A little message for you">
+    <div class="bottle-modal__backdrop" id="bottle-modal-backdrop"></div>
+    <div class="bottle-modal__box glass-card">
+      <button class="bottle-modal__close" id="bottle-modal-close" aria-label="Close message">✕</button>
+      <span class="bottle-modal__heart">💌</span>
+      <p class="bottle-modal__text">Just a reminder:<br>You are loved more than you know.<br>Happy Birthday, Safalta. ❤️</p>
+    </div>
+  </div>
 
   <main id="main-content">
 
@@ -82,6 +123,7 @@
         <span>Next</span>
         <span class="next-btn__arrow">↓</span>
       </button>
+      <p class="next-btn__caption reveal">Tap Next or swipe up</p>
     </section>
 
     <!-- ============ 2. BIRTHDAY VIDEO ============ -->
@@ -117,6 +159,7 @@
         <span>Next</span>
         <span class="next-btn__arrow">↓</span>
       </button>
+      <p class="next-btn__caption reveal">Tap Next or swipe up</p>
     </section>
 
     <!-- ============ 3. BIRTHDAY VOICE MESSAGE ============ -->
@@ -162,6 +205,7 @@
         <span>Next</span>
         <span class="next-btn__arrow">↓</span>
       </button>
+      <p class="next-btn__caption reveal">Tap Next or swipe up</p>
     </section>
 
     <!-- ============ 4. LOVE LETTER ============ -->
@@ -203,6 +247,7 @@
         <span>Next</span>
         <span class="next-btn__arrow">↓</span>
       </button>
+      <p class="next-btn__caption reveal">Tap Next or swipe up</p>
     </section>
 
     <!-- ============ 5. APPRECIATION CARDS ============ -->
@@ -237,10 +282,80 @@
         </div>
       </div>
 
-      <button class="next-btn reveal" data-next="#sky">
+      <button class="next-btn reveal" data-next="#why-special">
         <span>Next</span>
         <span class="next-btn__arrow">↓</span>
       </button>
+      <p class="next-btn__caption reveal">Tap Next or swipe up</p>
+    </section>
+
+    <!-- ============ NEW: WHY YOU'RE SPECIAL ============ -->
+    <section id="why-special" class="section why-section">
+      <p class="section-eyebrow reveal">just a few reasons, among many</p>
+      <h2 class="section-title reveal">Why You're Special</h2>
+
+      <div class="why-grid">
+        <div class="why-card glass-card reveal" style="--delay:0">
+          <span class="why-card__icon">😊</span>
+          <p class="why-card__title">Your smile</p>
+          <p class="why-card__text">It makes ordinary days feel brighter.</p>
+        </div>
+        <div class="why-card glass-card reveal" style="--delay:1">
+          <span class="why-card__icon">🌸</span>
+          <p class="why-card__title">Your kindness</p>
+          <p class="why-card__text">You care for people so effortlessly.</p>
+        </div>
+        <div class="why-card glass-card reveal" style="--delay:2">
+          <span class="why-card__icon">✨</span>
+          <p class="why-card__title">Your strength</p>
+          <p class="why-card__text">You keep moving forward even during hard times.</p>
+        </div>
+        <div class="why-card glass-card reveal" style="--delay:3">
+          <span class="why-card__icon">🌷</span>
+          <p class="why-card__title">Your laughter</p>
+          <p class="why-card__text">It's the sound I never get tired of.</p>
+        </div>
+        <div class="why-card glass-card reveal" style="--delay:4">
+          <span class="why-card__icon">💖</span>
+          <p class="why-card__title">Your heart</p>
+          <p class="why-card__text">Gentle, genuine, and beautiful.</p>
+        </div>
+        <div class="why-card glass-card reveal" style="--delay:5">
+          <span class="why-card__icon">📸</span>
+          <p class="why-card__title">Our memories</p>
+          <p class="why-card__text">Moments I'll always be grateful for.</p>
+        </div>
+      </div>
+
+      <button class="next-btn reveal" data-next="#surprise">
+        <span>Next</span>
+        <span class="next-btn__arrow">↓</span>
+      </button>
+      <p class="next-btn__caption reveal">Tap Next or swipe up</p>
+    </section>
+
+    <!-- ============ NEW: FINAL SURPRISE (just before Memory Sky / Close) ============ -->
+    <section id="surprise" class="section surprise-section">
+      <p class="surprise__pre reveal" id="surprise-pre">Before you leave...</p>
+
+      <button class="surprise-heart" id="surprise-heart" aria-label="Tap the heart">
+        <span class="surprise-heart__glow" aria-hidden="true"></span>
+        <span class="surprise-heart__icon">💗</span>
+      </button>
+
+      <div class="surprise-reveal" id="surprise-reveal" aria-hidden="true">
+        <p class="surprise-reveal__text">
+          No matter what changes with time,<br>
+          my prayers for your happiness never will.<br>
+          Happy Birthday, Safalta.
+        </p>
+
+        <button class="next-btn" id="surprise-next-btn" data-next="#sky">
+          <span>Next</span>
+          <span class="next-btn__arrow">↓</span>
+        </button>
+        <p class="next-btn__caption">Tap Next or swipe up</p>
+      </div>
     </section>
 
     <!-- ============ 6. MEMORY SKY ============ -->

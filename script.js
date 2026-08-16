@@ -211,6 +211,12 @@
     const overlay = document.getElementById("transition-overlay");
     const heartsLayer = document.getElementById("transition-hearts");
     const dotNav = document.getElementById("dot-nav");
+    const miniDotNav = document.getElementById("mini-dot-nav");
+    const messageBottle = document.getElementById("message-bottle");
+
+    const typewriterOverlay = document.getElementById("typewriter-overlay");
+    const typewriterText = document.getElementById("typewriter-text");
+    const typewriterContinueBtn = document.getElementById("typewriter-continue-btn");
 
     if (!btn || !hero || !welcome || !overlay) return;
 
@@ -238,6 +244,86 @@
       document.documentElement.classList.remove("is-locked");
       document.body.classList.remove("is-locked");
       if (dotNav) dotNav.classList.add("is-visible");
+      if (miniDotNav) miniDotNav.classList.add("is-visible");
+      if (messageBottle) messageBottle.classList.add("is-visible");
+    }
+
+    /* ---------------------------------------------------------------- *
+     * NEW: typewriter welcome — plays once the cinematic burst has
+     * dissolved, before Welcome is revealed. Types out two lines over
+     * ~3 seconds, then shows a "Continue" button that finishes the
+     * original open flow (unlock scrolling + scroll to Welcome).
+     * ---------------------------------------------------------------- */
+    function playTypewriter(onContinue) {
+      if (!typewriterOverlay || !typewriterText) {
+        onContinue();
+        return;
+      }
+
+      const lines = [
+        "For Safalta...",
+        "This little world was made with love, only for you. 🤍",
+      ];
+      const fullLength = lines.join("").length;
+      const totalDuration = 3000; // ~3 seconds, as requested
+      const msPerChar = Math.max(18, totalDuration / fullLength);
+
+      typewriterText.textContent = "";
+      typewriterOverlay.setAttribute("aria-hidden", "false");
+      typewriterOverlay.classList.add("is-active");
+      if (typewriterContinueBtn) typewriterContinueBtn.hidden = true;
+
+      function finishTyping() {
+        typewriterText.innerHTML =
+          lines[0] + "<br>" + lines[1];
+        if (typewriterContinueBtn) typewriterContinueBtn.hidden = false;
+      }
+
+      if (prefersReducedMotion) {
+        finishTyping();
+      } else {
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        function typeStep() {
+          if (lineIndex >= lines.length) {
+            finishTyping();
+            return;
+          }
+          const currentLine = lines[lineIndex];
+          charIndex++;
+          const typedSoFar = lines
+            .slice(0, lineIndex)
+            .concat(currentLine.slice(0, charIndex))
+            .join("<br>");
+          typewriterText.innerHTML = typedSoFar;
+
+          if (charIndex >= currentLine.length) {
+            lineIndex++;
+            charIndex = 0;
+          }
+
+          if (lineIndex >= lines.length) {
+            finishTyping();
+          } else {
+            setTimeout(typeStep, msPerChar);
+          }
+        }
+        setTimeout(typeStep, msPerChar);
+      }
+
+      function handleContinue() {
+        if (typewriterContinueBtn) {
+          typewriterContinueBtn.removeEventListener("click", handleContinue);
+        }
+        typewriterOverlay.classList.remove("is-active");
+        typewriterOverlay.setAttribute("aria-hidden", "true");
+        onContinue();
+      }
+
+      if (typewriterContinueBtn) {
+        typewriterContinueBtn.addEventListener("click", handleContinue);
+      }
     }
 
     function openExperience() {
@@ -251,29 +337,27 @@
       spawnBurstHearts();
       requestAnimationFrame(() => overlay.classList.add("is-active"));
 
-      const revealDelay = prefersReducedMotion ? 200 : 900;
-      const fadeOutDelay = prefersReducedMotion ? 400 : 1500;
-      const cleanupDelay = prefersReducedMotion ? 600 : 2500;
+      const fadeOutDelay = prefersReducedMotion ? 300 : 1400;
+      const cleanupDelay = prefersReducedMotion ? 500 : 2200;
 
-      // Step 3 — once the glow has peaked, unlock scrolling and move to
-      // the Welcome section while the overlay still covers the jump
-      setTimeout(() => {
-        unlockScrolling();
-        welcome.scrollIntoView({ behavior: "auto", block: "start" });
-      }, revealDelay);
-
-      // Step 4 — let the overlay dissolve, revealing Welcome underneath
+      // Step 3 — let the cinematic overlay dissolve
       setTimeout(() => {
         overlay.classList.remove("is-active");
         overlay.classList.add("is-fading");
       }, fadeOutDelay);
 
-      // Step 5 — cleanup: remove the overlay classes & burst hearts so
-      // everything is reset if the visitor scrolls back up to the hero
+      // Step 4 — cleanup the burst hearts, then play the typewriter
+      // welcome. Only once "Continue" is pressed do we unlock scrolling
+      // and move into the Welcome section.
       setTimeout(() => {
         overlay.classList.remove("is-fading");
         if (heartsLayer) heartsLayer.innerHTML = "";
-        hero.classList.remove("is-opening");
+
+        playTypewriter(() => {
+          unlockScrolling();
+          welcome.scrollIntoView({ behavior: "auto", block: "start" });
+          hero.classList.remove("is-opening");
+        });
       }, cleanupDelay);
     }
 
@@ -668,6 +752,59 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * NEW: FLOATING MESSAGE BOTTLE — opens once, shows a little note
+   * ------------------------------------------------------------------ */
+  function initMessageBottle() {
+    const bottle = document.getElementById("message-bottle");
+    const modal = document.getElementById("bottle-modal");
+    const backdrop = document.getElementById("bottle-modal-backdrop");
+    const closeBtn = document.getElementById("bottle-modal-close");
+    if (!bottle || !modal) return;
+
+    let opened = false;
+
+    function openModal() {
+      if (opened) return; // the bottle can only be opened once
+      opened = true;
+      modal.classList.add("is-visible");
+      modal.setAttribute("aria-hidden", "false");
+      bottle.classList.add("is-opened");
+      bottle.setAttribute("aria-label", "Message already opened");
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-visible");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    bottle.addEventListener("click", openModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (backdrop) backdrop.addEventListener("click", closeModal);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * NEW: FINAL SURPRISE — tap the glowing heart to reveal the message
+   * ------------------------------------------------------------------ */
+  function initFinalSurprise() {
+    const heart = document.getElementById("surprise-heart");
+    const pre = document.getElementById("surprise-pre");
+    const revealBox = document.getElementById("surprise-reveal");
+    if (!heart || !revealBox) return;
+
+    heart.addEventListener("click", () => {
+      if (heart.classList.contains("is-tapped")) return;
+      heart.classList.add("is-tapped");
+      heart.setAttribute("aria-label", "Heart tapped");
+      if (pre) pre.classList.add("is-fading");
+
+      setTimeout(() => {
+        revealBox.classList.add("is-visible");
+        revealBox.setAttribute("aria-hidden", "false");
+      }, prefersReducedMotion ? 100 : 500);
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * INIT — run everything once the DOM is ready
    * ------------------------------------------------------------------ */
   document.addEventListener("DOMContentLoaded", () => {
@@ -686,5 +823,7 @@
     initRevealOnScroll();
     initStarsCanvas();
     initCloseFlow();
+    initMessageBottle();
+    initFinalSurprise();
   });
 })();
