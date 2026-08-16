@@ -42,6 +42,7 @@
   <nav class="dot-nav" id="dot-nav" aria-hidden="true">
     <a href="#hero" class="dot-nav__dot" data-label="Home"></a>
     <a href="#welcome" class="dot-nav__dot" data-label="Welcome"></a>
+    <a href="#video" class="dot-nav__dot" data-label="Video"></a>
     <a href="#voice" class="dot-nav__dot" data-label="Voice"></a>
     <a href="#letter" class="dot-nav__dot" data-label="Letter"></a>
     <a href="#appreciation" class="dot-nav__dot" data-label="For You"></a>
@@ -76,9 +77,49 @@
         To the most beautiful soul,<br><span class="welcome__name">Safalta</span> <span class="welcome__sparkle">💗</span>
       </h2>
       <p class="welcome__subtitle reveal">Everything past this point was made with you in mind.</p>
+
+      <button class="next-btn reveal" data-next="#video">
+        <span>Next</span>
+        <span class="next-btn__arrow">↓</span>
+      </button>
     </section>
 
-    <!-- ============ 2. BIRTHDAY VOICE MESSAGE ============ -->
+    <!-- ============ 2. BIRTHDAY VIDEO ============ -->
+    <section id="video" class="section video-section">
+      <p class="section-eyebrow reveal">a little something to watch</p>
+      <h2 class="section-title reveal">A Birthday Video</h2>
+
+      <div class="video-card glass-card reveal">
+        <div class="video-card__frame" id="video-frame">
+          <!-- Add your own video file at assets/video/birthday.mp4, and an
+               optional poster image at assets/video/poster.jpg — see
+               assets/video/README.md -->
+          <video
+            id="birthday-video"
+            class="video-card__video"
+            poster="assets/video/poster.jpg"
+            preload="metadata"
+            playsinline
+          >
+            <source src="assets/video/birthday.mp4" type="video/mp4">
+            Your browser doesn't support embedded video. You can download the
+            file directly from the assets folder instead.
+          </video>
+          <button class="video-card__play-btn" id="video-play-btn" aria-label="Play video">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="player__hint reveal">It won't play on its own — press play whenever you'd like to watch. 🎬</p>
+
+      <button class="next-btn reveal" data-next="#voice">
+        <span>Next</span>
+        <span class="next-btn__arrow">↓</span>
+      </button>
+    </section>
+
+    <!-- ============ 3. BIRTHDAY VOICE MESSAGE ============ -->
     <section id="voice" class="section voice-section">
       <p class="section-eyebrow reveal">press play whenever you're ready</p>
       <h2 class="section-title reveal">A Birthday Voice Message</h2>
@@ -116,9 +157,14 @@
 
       <!-- Add your own audio file at assets/voice-message.mp3 — see assets/README.md -->
       <audio id="birthday-audio" src="assets/voice-message.mp3" preload="metadata"></audio>
+
+      <button class="next-btn reveal" data-next="#letter">
+        <span>Next</span>
+        <span class="next-btn__arrow">↓</span>
+      </button>
     </section>
 
-    <!-- ============ 3. LOVE LETTER ============ -->
+    <!-- ============ 4. LOVE LETTER ============ -->
     <section id="letter" class="section letter-section">
       <p class="section-eyebrow reveal">something I wanted to say</p>
       <h2 class="section-title reveal">A Love Letter</h2>
@@ -152,9 +198,14 @@
           <p class="letter-paper__sign">— Samir</p>
         </article>
       </div>
+
+      <button class="next-btn reveal" data-next="#appreciation">
+        <span>Next</span>
+        <span class="next-btn__arrow">↓</span>
+      </button>
     </section>
 
-    <!-- ============ 4. APPRECIATION CARDS ============ -->
+    <!-- ============ 5. APPRECIATION CARDS ============ -->
     <section id="appreciation" class="section appreciation-section">
       <p class="section-eyebrow reveal">a few things, among many</p>
       <h2 class="section-title reveal">Things I Adore About You</h2>
@@ -185,15 +236,33 @@
           <p class="card__label">The memories we made</p>
         </div>
       </div>
+
+      <button class="next-btn reveal" data-next="#sky">
+        <span>Next</span>
+        <span class="next-btn__arrow">↓</span>
+      </button>
     </section>
 
-    <!-- ============ 5. MEMORY SKY ============ -->
+    <!-- ============ 6. MEMORY SKY ============ -->
     <section id="sky" class="section sky-section">
       <canvas id="stars-canvas" aria-hidden="true"></canvas>
-      <div class="sky-content">
+
+      <div class="sky-content" id="sky-content">
         <span class="sky__heart">🤍</span>
         <p class="sky__text">You'll always have a special place in my heart.</p>
         <p class="sky__signature">— Samir</p>
+
+        <button class="close-btn reveal" id="close-btn">
+          <span>Close</span>
+          <span class="close-btn__heart">❤️</span>
+        </button>
+      </div>
+
+      <!-- Shown after "Close" is pressed, once the sky-content above has
+           faded out — see initCloseFlow() in script.js -->
+      <div class="goodbye-message" id="goodbye-message" aria-hidden="true">
+        <span class="goodbye-message__heart">💌</span>
+        <p class="goodbye-message__text">Thank you for visiting this little world made for you, Safalta. Happy Birthday. ❤️</p>
       </div>
     </section>
 

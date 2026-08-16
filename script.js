@@ -329,7 +329,58 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 5. VOICE MESSAGE PLAYER — play/pause, progress bar, seek
+   * 5. BIRTHDAY VIDEO — play on tap, never autoplay
+   * ------------------------------------------------------------------ */
+  function initVideoPlayer() {
+    const frame = document.getElementById("video-frame");
+    const video = document.getElementById("birthday-video");
+    const playBtn = document.getElementById("video-play-btn");
+    if (!frame || !video || !playBtn) return;
+
+    // Native controls stay off until she presses the custom play button,
+    // so the poster + glowing play icon is what greets her first.
+    video.controls = false;
+
+    playBtn.addEventListener("click", () => {
+      video.controls = true;
+      video.play().catch(() => {
+        const hint = frame.closest("section").querySelector(".player__hint");
+        if (hint) {
+          hint.textContent =
+            "Add your video to assets/video/birthday.mp4 to watch it here. 🎬";
+        }
+        video.controls = false;
+      });
+    });
+
+    video.addEventListener("play", () => frame.classList.add("is-playing"));
+    video.addEventListener("ended", () => {
+      frame.classList.remove("is-playing");
+      video.controls = false;
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 6. "NEXT ↓" BUTTONS — smooth-scroll to the following section
+   *    Backs up scrolling for anyone who might not realize the page
+   *    scrolls; scroll-snap keeps working for manual scrolling too.
+   * ------------------------------------------------------------------ */
+  function initNextButtons() {
+    document.querySelectorAll(".next-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = document.querySelector(btn.dataset.next);
+        if (target) {
+          target.scrollIntoView({
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+            block: "start",
+          });
+        }
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 7. VOICE MESSAGE PLAYER — play/pause, progress bar, seek
    *    Does NOT autoplay. Only starts on user interaction.
    * ------------------------------------------------------------------ */
   function initMusicPlayer() {
@@ -403,7 +454,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 6. ENVELOPE — open to unfold the letter
+   * 8. ENVELOPE — open to unfold the letter
    * ------------------------------------------------------------------ */
   function initEnvelope() {
     const envelope = document.getElementById("envelope");
@@ -439,7 +490,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 7. REVEAL ON SCROLL — appreciation cards + generic .reveal elements
+   * 9. REVEAL ON SCROLL — appreciation cards + generic .reveal elements
    * ------------------------------------------------------------------ */
   function initRevealOnScroll() {
     const targets = document.querySelectorAll(".card, .reveal");
@@ -461,7 +512,7 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * 8. MEMORY SKY — twinkling stars + softly rising glowing hearts
+   * 10. MEMORY SKY — twinkling stars + softly rising glowing hearts
    * ------------------------------------------------------------------ */
   function initStarsCanvas() {
     const canvas = document.getElementById("stars-canvas");
@@ -582,6 +633,41 @@
   }
 
   /* ------------------------------------------------------------------ *
+   * 11. FINAL CLOSE — fade out, show the goodbye message, then try to
+   *     close the tab. If the browser blocks window.close() (which most
+   *     do, for a tab it didn't open itself — the norm on GitHub Pages),
+   *     fall back to redirecting to goodbye.html.
+   * ------------------------------------------------------------------ */
+  function initCloseFlow() {
+    const closeBtn = document.getElementById("close-btn");
+    const skyContent = document.getElementById("sky-content");
+    const goodbye = document.getElementById("goodbye-message");
+    if (!closeBtn || !skyContent || !goodbye) return;
+
+    closeBtn.addEventListener("click", () => {
+      closeBtn.disabled = true;
+
+      // Step 1 — fade the sky content out
+      skyContent.classList.add("is-leaving");
+
+      // Step 2 — fade the goodbye message in
+      setTimeout(() => {
+        goodbye.classList.add("is-visible");
+        goodbye.setAttribute("aria-hidden", "false");
+      }, prefersReducedMotion ? 150 : 700);
+
+      // Step 3 — after she's had a moment to read it, try to close the
+      // tab; if that's blocked, fall back to the goodbye page
+      setTimeout(() => {
+        window.close();
+        setTimeout(() => {
+          window.location.href = "goodbye.html";
+        }, 350);
+      }, prefersReducedMotion ? 1200 : 3000);
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
    * INIT — run everything once the DOM is ready
    * ------------------------------------------------------------------ */
   document.addEventListener("DOMContentLoaded", () => {
@@ -593,9 +679,12 @@
     initAmbientCanvas();
     initCinematicOpen();
     initDotNav();
+    initVideoPlayer();
+    initNextButtons();
     initMusicPlayer();
     initEnvelope();
     initRevealOnScroll();
     initStarsCanvas();
+    initCloseFlow();
   });
 })();

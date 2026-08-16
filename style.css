@@ -934,6 +934,186 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ==========================================================================
+   NEW: BIRTHDAY VIDEO SECTION
+   ========================================================================== */
+.video-card {
+  max-width: 520px;
+  width: 100%;
+  border-radius: 28px;
+  padding: clamp(0.9rem, 4vw, 1.4rem);
+}
+
+.video-card__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #150f1e;
+  box-shadow: 0 20px 50px rgba(183, 159, 224, 0.28);
+}
+
+.video-card__video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #150f1e;
+}
+
+.video-card__play-btn {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--rose), var(--lavender-deep));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 28px rgba(74, 46, 68, 0.45), 0 0 0 8px rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  animation: glowPulse 2.6s ease-in-out infinite;
+}
+
+.video-card__play-btn svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--white);
+  margin-left: 3px; /* optically center the play triangle */
+}
+
+.video-card__play-btn:hover { transform: scale(1.08); }
+
+.video-card__frame.is-playing .video-card__play-btn {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+/* ==========================================================================
+   NEW: "NEXT ↓" SECTION NAVIGATION
+   ========================================================================== */
+.next-btn {
+  margin-top: clamp(1.6rem, 5vh, 2.4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--rose), var(--lavender-deep));
+  box-shadow: 0 8px 22px rgba(212, 106, 159, 0.32);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.next-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 26px rgba(212, 106, 159, 0.4);
+}
+.next-btn:active { transform: translateY(-1px) scale(0.99); }
+
+.next-btn__arrow {
+  display: inline-block;
+  animation: bounceDown 1.6s ease-in-out infinite;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* ==========================================================================
+   NEW: FINAL "CLOSE ❤️" BUTTON + GOODBYE MESSAGE (Memory Sky section)
+   ========================================================================== */
+.sky-content {
+  transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+}
+
+.sky-content.is-leaving {
+  opacity: 0;
+  transform: translateY(-14px) scale(0.97);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.close-btn {
+  margin-top: clamp(1.8rem, 5vh, 2.6rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.9rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--white);
+  background: linear-gradient(135deg, #e85770, #b8213f);
+  box-shadow: 0 10px 26px rgba(184, 33, 63, 0.45), 0 0 0 rgba(184, 33, 63, 0.4);
+  animation: closeGlow 2.4s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.close-btn:hover { transform: translateY(-3px) scale(1.03); }
+.close-btn:disabled { pointer-events: none; opacity: 0.7; }
+
+.close-btn__heart { display: inline-block; animation: pulse 1.6s ease-in-out infinite; }
+
+@keyframes closeGlow {
+  0%, 100% { box-shadow: 0 10px 26px rgba(184, 33, 63, 0.4), 0 0 0 rgba(184, 33, 63, 0.35); }
+  50% { box-shadow: 0 10px 30px rgba(184, 33, 63, 0.55), 0 0 22px rgba(184, 33, 63, 0.5); }
+}
+
+.goodbye-message {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  padding: 2rem;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.9s ease;
+}
+
+.goodbye-message.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.goodbye-message__heart {
+  font-size: 2.4rem;
+  animation: pulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
+}
+
+.goodbye-message__text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.3rem, 4.6vw, 2rem);
+  max-width: 28ch;
+  line-height: 1.55;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(240, 207, 142, 0.35);
+}
+
+/* Shared with goodbye.html */
+.goodbye__note {
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+/* ==========================================================================
    Small utility: focus visibility for accessibility
    ========================================================================== */
 button:focus-visible,

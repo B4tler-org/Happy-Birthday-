@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Goodbye — For Safalta 💖</title>
+  <meta name="description" content="Thank you for visiting.">
+  <meta name="robots" content="noindex">
+
+  <!-- Same fonts as the main site -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2224%22 font-size=%2224%22>💗</text></svg>">
+
+  <!-- Reuses the main stylesheet for shared variables, fonts, and the
+       .sky-section / .sky-content look, so this page always matches the
+       rest of the site automatically. -->
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* This page is a single, static screen — no scroll-snap or lock needed. */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="section sky-section" id="goodbye-section">
+    <canvas id="stars-canvas" aria-hidden="true"></canvas>
+
+    <div class="sky-content">
+      <span class="sky__heart">💌</span>
+      <p class="sky__text">Thank you for visiting this little world made for you, Safalta. Happy Birthday. ❤️</p>
+      <p class="sky__signature">— Samir</p>
+      <p class="goodbye__note">You can close this tab now.</p>
+    </div>
+  </section>
+
+  <script src="goodbye.js"></script>
+</body>
+</html>
